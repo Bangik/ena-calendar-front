@@ -1,4 +1,5 @@
 <?php
+    //get data lewat API
     $urlApi = "http://192.168.100.110/ena-calendar/public/api/categories";
     $data = file_get_contents($urlApi);
     $data = json_decode($data);
@@ -16,8 +17,10 @@
     <!-- Font Icon Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    <!-- JQuery 3.6.0 -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <!--Framework Jquery Mobile 1.4.5-->
+    
+    <!--Framework JQuery Mobile 1.4.5-->
     <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
@@ -27,9 +30,10 @@
     <script src="//code.jquery.com/jquery-1.12.4.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+    <!-- MomentJs 2.27.0 -->
     <script src='https://cdn.jsdelivr.net/npm/moment@2.27.0/min/moment.min.js'></script>
 
-    <!-- rrule lib -->
+    <!-- Rrule lib -->
     <script src='https://cdn.jsdelivr.net/npm/rrule@2.6.4/dist/es5/rrule.min.js'></script>
 
     <!-- kode untuk fullcalendar -->
@@ -37,6 +41,7 @@
     <script src='../lib/main.js'></script>
     <script src='../lib/locales/id.js'></script>
     
+    <!-- Popper dan Tooltip -->
     <script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
     <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
 
@@ -78,23 +83,22 @@
                 <div class="ui-field-contain">
                     <label for="category_id" class="kategori">Kategori Kegiatan</label>
                     <select name="kategori" id="category_id" data-native-menu="true" required>
-                        <!-- <option value='fa-500px'>&#xf26e; fa-500px</option> -->
                         <option selected disabled value="pilih"><span>Silahkan Memilih</span></option>
                         <?php
-                    foreach($categories as $key => $category){
-                    ?>
-                    <optgroup label="<?= $key ?>">
-                        <?php
-                        foreach($category as $value){
+                        foreach($categories as $key => $category){
                         ?>
-                        <option value="<?= $value->id ?>"><?= $value->name ?></option>
+                        <optgroup label="<?= $key ?>">
+                            <?php
+                            foreach($category as $value){
+                            ?>
+                            <option value="<?= $value->id ?>"><?= $value->name ?></option>
+                            <?php
+                            }
+                            ?>
+                        </optgroup>
                         <?php
                         }
                         ?>
-                    </optgroup>
-                    <?php
-                    }
-                    ?>
                     </select>
                 </div>
 
@@ -187,6 +191,7 @@
             </div>
         </div>
     </div>
+
     <script src="./js/index.js"></script>
 </body>
 </html>
