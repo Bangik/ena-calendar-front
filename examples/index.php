@@ -1,5 +1,5 @@
 <?php
-    $urlApi = "http://192.168.100.111/ena-calendar/public/api/categories";
+    $urlApi = "http://192.168.100.110/ena-calendar/public/api/categories";
     $data = file_get_contents($urlApi);
     $data = json_decode($data);
     $categories = $data->data;

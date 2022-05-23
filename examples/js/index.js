@@ -1,6 +1,5 @@
 $(document).ready(function(){
-    const baseURL = 'http://192.168.100.111/ena-calendar/public/api/events';
-
+    const baseURL = 'http://192.168.100.110/ena-calendar/public/api/events';
     $(document).click(function() {
         var container = $("#searchResult li");
         if (!container.is(event.target) && !container.has(event.target).length) {
@@ -73,7 +72,10 @@ $(document).ready(function(){
             $('#btn_count').show();
             $('#div_count').show();
             $('#count').show();
-            $('#btn_date_until').show();
+            $("#div_date_until").hide();
+            $("#date_until").hide();
+            $('#btn_count').css('background-color', '#ffffff');
+            $('#btn_date_until').css('background-color', '#F2F2F2');
         }
     }
 
@@ -94,7 +96,8 @@ $(document).ready(function(){
                     $('#count').val('');
                     $('#date_until').val('');
                     return false;
-                } else if(Date.parse(start) > Date.parse(tanggal)){
+                }
+                if(Date.parse(startDate) > Date.parse(tanggal)){
                     alert('Tanggal selesai tidak boleh lebih besar dari tanggal mulai');
                     $('#count').val('');
                     $('#date_until').val('');
