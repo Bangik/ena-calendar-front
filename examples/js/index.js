@@ -1,6 +1,6 @@
 $(document).ready(function () {
     //connect to db lewat API
-    const baseURL = 'http://192.168.100.110/ena-calendar/public/api/events';
+    const baseURL = 'http://192.168.100.113/ena-calendar/public/api/events';
 
     // f ketika klik dari hasil search
     $(document).click(function () {
@@ -249,29 +249,104 @@ $(document).ready(function () {
                         type: "GET",
                         success: function (response) {
                             let repeat_id = response.data.recurring_id;
-                            $('#label_tambah').html('Ubah Kegiatan');
-                            $('#tambah').show();
-                            $('#simpan-tambah').hide();
-                            $('#simpan-ubah').show();
-                            $('#delete').show();
-                            windScroll();
-                            $('#category_id-button span').replaceWith('<span>' + response.data.category.name + '</span>');
-
+                            
                             if (repeat_id) {
-                                $('#recurrence-button span').replaceWith(`<span>${response.data.recurring.tipe}</span>`);
-                                fillForm(
-                                    response.data.category.id,
-                                    response.data.title,
-                                    response.data.description,
-                                    response.data.location,
-                                    calendar.formatDate(response.data.start, "YYYY-MM-DDTHH:mm"),
-                                    calendar.formatDate(response.data.end, "YYYY-MM-DDTHH:mm"),
-                                    response.data.recurring.type,
-                                    response.data.recurring.count,
-                                    response.data.recurring.date,
-                                    idEvent
-                                );
+                                $('#tambah').hide();
+                                $('#alert_repeat').show();
+                                windScroll();
+
+                                $('#repeat_ya').click(function(){
+                                    allEvent = 1;
+                                    $('#alert_repeat').hide();
+
+                                    recurringYes(response.data.recurring.type);
+
+                                    //ketika berulang, aktifkan f dibawah
+                                    $("#recurrence").change(function () {
+                                        let val = $(this).val();
+                                        recurringYes(val);
+                                    });
+
+                                    $('#label_tambah').html('Ubah Kegiatan');
+                                    $('#tambah').show();
+                                    $('#simpan-tambah').hide();
+                                    $('#simpan-ubah').show();
+                                    $('#delete').show();
+                                    windScroll();
+                                    $('#category_id-button span').replaceWith('<span>' + response.data.category.name + '</span>');
+                                    $('#recurrence-button span').replaceWith(`<span>${response.data.recurring.tipe}</span>`);
+                                    fillForm(
+                                        response.data.category.id,
+                                        response.data.title,
+                                        response.data.description,
+                                        response.data.location,
+                                        calendar.formatDate(response.data.start, "YYYY-MM-DDTHH:mm"),
+                                        calendar.formatDate(response.data.end, "YYYY-MM-DDTHH:mm"),
+                                        response.data.recurring.type,
+                                        response.data.recurring.count,
+                                        response.data.recurring.date,
+                                        idEvent
+                                    );
+                                });
+
+                                $('#repeat_tidak').click(function () {
+                                    $('#alert_repeat').hide();
+                                    allEvent = 0;
+                                    recurringYes(response.data.recurring.type);
+
+                                    //ketika berulang, aktifkan f dibawah
+                                    $("#recurrence").change(function () {
+                                        let val = $(this).val();
+                                        recurringYes(val);
+                                    });
+                
+                                    // f ke ubah kegiatan
+                                    $('#label_tambah').html('Ubah Kegiatan');
+                                    $('#tambah').show();
+                                    // auto scroll kebawah ketika event diklik
+                                    windScroll();
+                                    // tampilkan isi dari setiap event yang diklik
+                                    $('#category_id-button span').replaceWith('<span>' + response.data.category.name + '</span>');
+                                    $('#recurrence-button span').replaceWith(`<span>${response.data.recurring.tipe}</span>`);
+                                    fillForm(
+                                        response.data.category.id,
+                                        response.data.title,
+                                        response.data.description,
+                                        response.data.location,
+                                        calendar.formatDate(response.data.start, "YYYY-MM-DDTHH:mm"),
+                                        calendar.formatDate(response.data.end, "YYYY-MM-DDTHH:mm"),
+                                        response.data.recurring.type,
+                                        response.data.recurring.count,
+                                        response.data.recurring.date,
+                                        idEvent
+                                    );
+                                    $('#simpan-tambah').hide();
+                                    $('#simpan-ubah').show();
+                                    $('#delete').show(); //tombol delete ditampilkan di form ubah
+                                });
+
                             } else {
+                                allEvent = 0;
+                                $('#alert_repeat').hide();
+
+                                // ketika tidak berulang, aktifkan f dibawah
+                                recurringNo();
+                                //ketika berulang, aktifkan f dibawah
+                                $("#recurrence").change(function () {
+                                    let val = $(this).val();
+                                    recurringYes(val);
+                                });
+
+                                // 
+                                // f ke ubah kegiatan
+                                $('#label_tambah').html('Ubah Kegiatan');
+                                $('#tambah').show();
+                                // auto scroll kebawah ketika event diklik
+                                windScroll();
+
+                                // tampilkan isi dari setiap event yang diklik
+                                $('#category_id-button span').replaceWith('<span>' + response.data.category.name + '</span>');
+                                $('#recurrence-button span').replaceWith('<span>Tidak</span>');
                                 $('#recurrence-button span').replaceWith(`<span>Tidak</span>`);
                                 fillForm(
                                     response.data.category.id,
@@ -285,6 +360,9 @@ $(document).ready(function () {
                                     '',
                                     idEvent
                                 );
+                                $('#simpan-tambah').hide();
+                                $('#simpan-ubah').show();
+                                $('#delete').show(); //tombol delete ditampilkan di form ubah
                             }
                         },
                         error: function (response) {
@@ -341,7 +419,6 @@ $(document).ready(function () {
 
         //ketika suatu event diklik
         eventClick: function (arg) {
-            console.log(arg);
             let repeat_id = arg.event.extendedProps.recurring_id;
             if (repeat_id) {
                 $('#tambah').hide();
@@ -423,7 +500,7 @@ $(document).ready(function () {
                     $('#simpan-tambah').hide();
                     $('#simpan-ubah').show();
                     $('#delete').show(); //tombol delete ditampilkan di form ubah
-                })
+                });
 
             } else {
                 allEvent = 0;
