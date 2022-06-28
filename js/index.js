@@ -1,6 +1,22 @@
 $(document).ready(function () {
     //connect to db lewat API
-    const baseURL = 'http://192.168.100.113/ena-calendar/public/api/events';
+    const baseURL = 'http://192.168.100.113/ena-calendar/public/api';
+
+    //get data from db
+    $.ajax({
+        type: 'GET',
+        url: `${baseURL}/categories`,
+        dataType: 'json',
+        success: function (data) {
+            $.each(data.data, function (index, value) {
+                $('#category_id').append(
+                    `<optgroup label="${index}">
+                        ${value.map(item => `<option value="${item.id}">${item.name}</option>`).join('')}
+                    </optgroup>`
+                );
+            });
+        }
+    });
 
     // f ketika klik dari hasil search
     $(document).click(function () {
@@ -96,6 +112,31 @@ $(document).ready(function () {
 
     //f validasi form
     function validateForm(category, title, startDate, endDate, repeat, hitung, tanggal) {
+        if (category == '' || category == null) {
+            alert('Kategori belum dipilih!');
+            return false;
+        }
+
+        if (title == '' || title == null || title.length == 0) {
+            alert('Judul belum diisi!');
+            return false;
+        }
+
+        if (startDate == '' || startDate == null || startDate.length == 0) {
+            alert('Tanggal mulai belum diisi!');
+            return false;
+        }
+
+        if (endDate == '' || endDate == null || endDate.length == 0) {
+            alert('Tanggal selesai belum diisi!');
+            return false;
+        }
+
+        if (Date.parse(startDate) > Date.parse(endDate)) {
+            alert('Tanggal atau jam selesai tidak boleh lebih besar dari tanggal atau jam mulai');
+            return false;
+        }
+
         // validasi hitung atau count jika berulang
         if (repeat != 'tidak') {
             if (hitung == 0 || hitung == '' || hitung == null) {
@@ -122,26 +163,6 @@ $(document).ready(function () {
             }
         }
 
-        if (category == '' || category == null) {
-            alert('Kategori belum dipilih!');
-            return false;
-        }
-        if (title == '' || title == null || title.length == 0) {
-            alert('Judul belum diisi!');
-            return false;
-        }
-        if (startDate == '' || startDate == null || startDate.length == 0) {
-            alert('Tanggal mulai belum diisi!');
-            return false;
-        }
-        if (endDate == '' || endDate == null || endDate.length == 0) {
-            alert('Tanggal selesai belum diisi!');
-            return false;
-        }
-        if (Date.parse(startDate) > Date.parse(endDate)) {
-            alert('Tanggal atau jam selesai tidak boleh lebih besar dari tanggal atau jam mulai');
-            return false;
-        }
         return true;
     }
 
@@ -213,7 +234,7 @@ $(document).ready(function () {
         resetForm();
         let search = $(this).val();
         $.ajax({
-            url: `${baseURL}/search`,
+            url: `${baseURL}/events/search`,
             type: 'POST',
             data: { search: search },
             dataType: 'json',
@@ -245,7 +266,7 @@ $(document).ready(function () {
                     });
 
                     $.ajax({
-                        url: `${baseURL}/${idEvent}`,
+                        url: `${baseURL}/events/${idEvent}`,
                         type: "GET",
                         success: function (response) {
                             let repeat_id = response.data.recurring_id;
@@ -396,7 +417,18 @@ $(document).ready(function () {
         },
         locale: 'id',
         navLinks: true,
-        events: 'tampil.php',
+        events: function (fetchInfo, successCallback, failureCallback) {
+            $.ajax({
+                type: 'GET',
+                url: `${baseURL}/events?start=${fetchInfo.startStr}&end=${fetchInfo.endStr}`,
+                success: function (response) {
+                    successCallback(response.data);
+                },
+                error: function (response) {
+                    failureCallback(response);
+                }
+            });
+        },
         editable: true,
         selectable: true,
         nextDayThreshold: '00:00',
@@ -569,7 +601,7 @@ $(document).ready(function () {
             let end = calendar.formatDate(arg.event.end, "YYYY-MM-DDTHH:mm")
 
             $.ajax({
-                url: `${baseURL}/${arg.event.id}`,
+                url: `${baseURL}/events/${arg.event.id}`,
                 type: "PUT",
                 data: {
                     category_id: kategori,
@@ -617,7 +649,7 @@ $(document).ready(function () {
 
         if (validateForm(kategori, title, start, end, repeat, hitung, tanggal)) {
             $.ajax({
-                url: baseURL,
+                url: `${baseURL}/events`,
                 type: "POST",
                 data: {
                     category_id: kategori,
@@ -664,7 +696,7 @@ $(document).ready(function () {
 
         if (validateForm(kategori, title, start, end, repeat, hitung, tanggal)) {
             $.ajax({
-                url: `${baseURL}/${id}`,
+                url: `${baseURL}/events/${id}`,
                 type: "PUT",
                 data: {
                     category_id: kategori,
@@ -707,7 +739,7 @@ $(document).ready(function () {
         let id = $('#id-event-edit').val();
         if (id) {
             $.ajax({
-                url: `${baseURL}/${id}`,
+                url: `${baseURL}/events/${id}`,
                 type: "DELETE",
                 data: {
                     allEvent: allEvent

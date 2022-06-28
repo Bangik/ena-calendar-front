@@ -1,11 +1,3 @@
-<?php
-    //get data lewat API
-    $urlApi = "http://192.168.100.113/ena-calendar/public/api/categories";
-    $data = file_get_contents($urlApi);
-    $data = json_decode($data);
-    $categories = $data->data;
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +7,7 @@
     <title>Kalender Event</title>
 
     <!-- Font Icon Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- JQuery 3.6.0 -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -37,9 +29,9 @@
     <script src='https://cdn.jsdelivr.net/npm/rrule@2.6.4/dist/es5/rrule.min.js'></script>
 
     <!-- kode untuk fullcalendar -->
-    <link href='../lib/main.css' rel='stylesheet' />
-    <script src='../lib/main.js'></script>
-    <script src='../lib/locales/id.js'></script>
+    <link href='style/main.css' rel='stylesheet' />
+    <script src='js/main.js'></script>
+    <script src='js/id.js'></script>
     
     <!-- Popper dan Tooltip -->
     <script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
@@ -55,7 +47,7 @@
 </head>
 <body>
     <div class="load">
-        <img id="loading-image" src="img/loading3.gif"/>
+        <img id="loading-image" src="img/loading.gif"/>
     </div>
     <div class="container">
         <!-- Fitur Search -->
@@ -81,29 +73,15 @@
             <form autocomplete="off" id="form-events">
                 <input type="hidden" id="id-event-edit">
                 <div class="ui-field-contain">
-                    <label for="category_id" class="kategori">Kategori Kegiatan</label>
+                    <label for="category_id" class="kategori">Kategori Kegiatan <small style="color: red;">*</small></label>
                     <select name="kategori" id="category_id" data-native-menu="true" required>
                         <option selected disabled value="pilih"><span>Silahkan Memilih</span></option>
-                        <?php
-                        foreach($categories as $key => $category){
-                        ?>
-                        <optgroup label="<?= $key ?>">
-                            <?php
-                            foreach($category as $value){
-                            ?>
-                            <option value="<?= $value->id ?>"><?= $value->name ?></option>
-                            <?php
-                            }
-                            ?>
-                        </optgroup>
-                        <?php
-                        }
-                        ?>
+                        
                     </select>
                 </div>
 
                 <div class="ui-field-contain">
-                    <label for="title">Judul Kegiatan</label>
+                    <label for="title">Judul Kegiatan <small style="color: red;">*</small></label>
                     <input type="text" name="title" id="title" placeholder="" required>
                 </div>
 
@@ -118,18 +96,18 @@
                 </div>
 
                 <div class="ui-field-contain">
-                    <label for="start">Tanggal dan Jam Mulai</label>
+                    <label for="start">Tanggal dan Jam Mulai <small style="color: red;">*</small></label>
                     <input type="datetime-local" data-clear-btn="false" name="start" id="start" required>
                 </div>
 
                 <div class="ui-field-contain">
-                    <label for="end">Tanggal dan Jam Selesai</label>
+                    <label for="end">Tanggal dan Jam Selesai <small style="color: red;">*</small></label>
                     <input type="datetime-local" data-clear-btn="false" name="end" id="end" required>
                 </div>
 
                 <div class="ui-field-contain">
                     <form>
-                        <label for="recurrence">Berulang?</label>
+                        <label for="recurrence">Berulang? <small style="color: red;">*</small></label>
 
                         <select name="recurrence" id="recurrence" class="recurrence">
                             <option disabled value="pilih" id="pilih">Silahkan Memilih...</option>
