@@ -1,6 +1,6 @@
 $(document).ready(function () {
     //connect to db lewat API
-    const baseURL = 'http://192.168.100.113/ena-calendar/public/api';
+    const baseURL = 'http://192.168.100.123/ena-calendar/public/api';
 
     //get data from db
     $.ajax({
@@ -146,7 +146,7 @@ $(document).ready(function () {
                     $('#date_until').val('');
                     return false;
                 }
-                if(Date.parse(startDate) > Date.parse(tanggal)){
+                if (Date.parse(startDate) > Date.parse(tanggal)) {
                     alert('Tanggal selesai tidak boleh lebih besar dari tanggal mulai');
                     $('#count').val('');
                     $('#date_until').val('');
@@ -270,13 +270,13 @@ $(document).ready(function () {
                         type: "GET",
                         success: function (response) {
                             let repeat_id = response.data.recurring_id;
-                            
+
                             if (repeat_id) {
                                 $('#tambah').hide();
                                 $('#alert_repeat').show();
                                 windScroll();
 
-                                $('#repeat_ya').click(function(){
+                                $('#repeat_ya').click(function () {
                                     allEvent = 1;
                                     $('#alert_repeat').hide();
 
@@ -320,7 +320,7 @@ $(document).ready(function () {
                                         let val = $(this).val();
                                         recurringYes(val);
                                     });
-                
+
                                     // f ke ubah kegiatan
                                     $('#label_tambah').html('Ubah Kegiatan');
                                     $('#tambah').show();
